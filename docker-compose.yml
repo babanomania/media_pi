@@ -1,57 +1,44 @@
 version: "3.7"
+
 services:
   radarr:
     container_name: radarr
     image: cr.hotio.dev/hotio/radarr
     restart: unless-stopped
-    logging:
-      driver: json-file
-    network_mode: bridge
     ports:
       - 7878:7878
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - radarr-config:/config
       - ${ROOT}/data/tv:/data
-    links:
-      - qbittorrent:qflood
+      - ${ROOT}/data/torrents:/app/qBittorrent/downloads
+
   sonarr:
     container_name: sonarr
     image: cr.hotio.dev/hotio/sonarr:latest
     restart: unless-stopped
-    logging:
-      driver: json-file
-    network_mode: bridge
     ports:
       - 8989:8989
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - sonarr-config:/config
       - ${ROOT}/data/movies:/data
-    links:
-      - qbittorrent:qflood
+      - ${ROOT}/data/torrents:/app/qBittorrent/downloads
+
   prowlarr:
     container_name: prowlarr
     image: cr.hotio.dev/hotio/prowlarr:nightly
     restart: unless-stopped
-    logging:
-      driver: json-file
-    network_mode: bridge
     ports:
       - 9696:9696
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - prowlarr-config:/config
-    links:
-      - radarr:radarr
-      - sonarr:sonarr
+
   qflood:
     container_name: qflood
     image: cr.hotio.dev/hotio/qflood
     restart: unless-stopped
-    logging:
-      driver: json-file
-    network_mode: bridge
     ports:
       - 8080:8080
       - 3000:3000
@@ -61,25 +48,25 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - qflood-config:/config
       - ${ROOT}/data/torrents:/app/qBittorrent/downloads
-  plex:
-    container_name: plex
-    image: cr.hotio.dev/hotio/plex
+
+  jellyfin:
+    container_name: jellyfin
+    image: cr.hotio.dev/hotio/jellyfin
     restart: unless-stopped
-    logging:
-      driver: json-file
-    network_mode: bridge
     ports:
-      - 32400:32400
-    environment:
-      - PLEX_CLAIM
-      - ADVERTISE_IP
-      - ALLOWED_NETWORKS
-      - PLEX_PASS=no
+      - 8096:8096
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ${ROOT}/data:/media
-      - plex-config:/config
-      - plex-transcode:/transcode
+      - jellyfin-config:/config
+      - ${ROOT}/data:/data
+
+  setup:
+    build: auto-configure/.
+    depends_on:
+      - radarr
+      - sonarr
+      - prowlarr
+
   watchtower:
     container_name: watchtower
     image: containrrr/watchtower
@@ -96,5 +83,4 @@ volumes:
   sonarr-config:
   prowlarr-config:
   qflood-config:
-  plex-config:
-  plex-transcode:
+  jellyfin-config:

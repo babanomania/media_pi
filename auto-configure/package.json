@@ -1,0 +1,17 @@
+{
+  "name": "auto-configure",
+  "version": "1.0.0",
+  "description": "auto-configure media_pi",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Shouvik Basu",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "supertest": "^6.2.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1"
+  }
+}
