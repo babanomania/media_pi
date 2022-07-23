@@ -60,8 +60,10 @@ services:
       - jellyfin-config:/config
       - ${ROOT}/data:/data
 
-  setup:
+  auto-configure:
     build: auto-configure/.
+    environment:
+      - TORRENT_INDEXERS=${TORRENT_INDEXERS}
     depends_on:
       - radarr
       - sonarr

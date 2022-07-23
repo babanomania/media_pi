@@ -9,13 +9,14 @@ docker-compose up -d
 2. Auto Configure the Setup
 
 ```bash
-docker-compose run setup now
+docker-compose run auto-configure npm test
+docker-compose rm -f
 ```
 
 3. Backup Volumes
 
 ```bash
-sh scripts/backup_volumes.sh media_pi /path/to/your/backups
+sh scripts/backup_all_volumes.sh
 ```
 
 4. Restore Volumes

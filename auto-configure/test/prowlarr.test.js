@@ -5,10 +5,14 @@ const api = request(process.env.PROWLARR_URL);
 const sonarrApi = request(process.env.SONARR_URL);
 const radarrApi = request(process.env.RADARR_URL);
 
+const indexerNames = process.env.TORRENT_INDEXERS.split(",");
+console.log(indexerNames);
+
 describe("Prowlarr", function () {
   let apiKey;
   let sonarrApiKey;
   let radarrApiKey;
+  let indexersList = [];
 
   before("Get Api-Key", async function () {
     await api
@@ -129,5 +133,26 @@ describe("Prowlarr", function () {
         tags: [],
       })
       .expect(201);
+  });
+
+  before("Get Indexers List", async function () {
+    await api
+      .get("/api/v1/indexer/schema")
+      .set("X-Api-Key", apiKey)
+      .set("Accept", "application/json")
+      .expect(200)
+      .then((res) => {
+        indexersList = JSON.parse(res.text);
+      });
+  });
+
+  indexerNames.forEach((indexerName) => {
+    it(`Add Indexer '${indexerName}'`, () =>
+      api
+        .post("/api/v1/indexer?")
+        .set("X-Api-Key", apiKey)
+        .set("Accept", "application/json")
+        .send(indexersList.find((idx) => idx.name === indexerName))
+        .expect(201));
   });
 });
