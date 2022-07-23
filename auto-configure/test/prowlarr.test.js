@@ -87,13 +87,13 @@ describe("Prowlarr", function () {
           },
           {
             name: "syncCategories",
-            value: [2000, 2010, 2020, 2030, 2040, 2045, 2050, 2060, 2070, 2080],
+            value: [5000, 5010, 5020, 5030, 5040, 5050, 5060, 5070, 5080],
           },
         ],
-        implementationName: "Radarr",
-        implementation: "Radarr",
-        configContract: "RadarrSettings",
-        infoLink: "https://wiki.servarr.com/prowlarr/supported#radarr",
+        implementationName: "Sonarr",
+        implementation: "Sonarr",
+        configContract: "SonarrSettings",
+        infoLink: "https://wiki.servarr.com/prowlarr/supported#sonarr",
         tags: [],
       })
       .expect(201);
@@ -151,7 +151,10 @@ describe("Prowlarr", function () {
         .post("/api/v1/indexer?")
         .set("X-Api-Key", apiKey)
         .set("Accept", "application/json")
-        .send(indexersList.find((idx) => idx.name === indexerName))
+        .send({
+          ...indexersList.find((idx) => idx.name === indexerName),
+          appProfileId: 1,
+        })
         .expect(201));
   });
 });

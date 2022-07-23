@@ -40,7 +40,7 @@ services:
     image: cr.hotio.dev/hotio/qflood
     restart: unless-stopped
     ports:
-      - 8080:8080
+      # - 8080:8080
       - 3000:3000
     environment:
       - FLOOD_AUTH=false
