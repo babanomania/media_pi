@@ -6,7 +6,6 @@ const sonarrApi = request(process.env.SONARR_URL);
 const radarrApi = request(process.env.RADARR_URL);
 
 const indexerNames = process.env.TORRENT_INDEXERS.split(",");
-console.log(indexerNames);
 
 describe("Prowlarr", function () {
   let apiKey;
