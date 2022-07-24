@@ -163,7 +163,7 @@ describe("Prowlarr", function () {
   });
 
   describe("Configure Indexers", function () {
-    it("Check Added Indexers", function () {
+    before("Check Added Indexers", function () {
       return api
         .get("/api/v1/indexer")
         .set("X-Api-Key", apiKey)
