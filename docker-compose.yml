@@ -64,6 +64,10 @@ services:
     build: auto-configure/.
     environment:
       - TORRENT_INDEXERS=${TORRENT_INDEXERS}
+      - JF_USERNAME=${JF_USERNAME}
+      - JF_PASSWORD=${JF_PASSWORD}
+      - JF_METADATA_COUNTRY_CODE=${JF_METADATA_COUNTRY_CODE}
+      - JF_METADATA_LANG=${JF_METADATA_LANG}
     depends_on:
       - radarr
       - sonarr
