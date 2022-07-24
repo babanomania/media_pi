@@ -5,6 +5,7 @@ const api = request(process.env.JELLYFIN_URL);
 
 describe("Jellyfin", function () {
   let setupCompleted;
+  let firstUser;
 
   before("Check Startup Wizard Status", async function () {
     await api
@@ -17,6 +18,32 @@ describe("Jellyfin", function () {
       });
   });
 
+  before("Get First User", function () {
+    return setupCompleted
+      ? this.skip()
+      : api
+          .get("/Startup/FirstUser")
+          .set("Content-Type", "application/json")
+          .expect(200)
+          .then((res) => {
+            let status = JSON.parse(res.text);
+            firstUser = status.Name;
+          });
+  });
+
+  it("Set User", function () {
+    return setupCompleted
+      ? this.skip()
+      : api
+          .post("/Startup/User")
+          .set("Content-Type", "application/json")
+          .send({
+            Name: process.env.JF_USERNAME || "mediapi",
+            Password: process.env.JF_PASSWORD || "mediapi",
+          })
+          .expect(204);
+  });
+
   it("Set Language", function () {
     return setupCompleted
       ? this.skip()
@@ -27,19 +54,6 @@ describe("Jellyfin", function () {
             UICulture: "en-US",
             MetadataCountryCode: process.env.JF_METADATA_COUNTRY_CODE || "US",
             PreferredMetadataLanguage: process.env.JF_METADATA_LANG || "en",
-          })
-          .expect(204);
-  });
-
-  it("Set User", function () {
-    return setupCompleted
-      ? this.skip()
-      : api
-          .post("/Startup/User")
-          .set("Accept", "application/json")
-          .send({
-            Name: process.env.JF_USERNAME || "hotio",
-            Password: process.env.JF_PASSWORD || "hotio",
           })
           .expect(204);
   });
